@@ -1,0 +1,1010 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="./sproject_html.xsl"?>
+<!DOCTYPE sproject SYSTEM "sproject.dtd">
+<sproject>
+    <course database="Oracle" version="11">
+        <cname>Databázové systémy</cname>
+            <code>BI-DBS.21</code>
+            <semester>B212</semester>
+            <seminar>Úterý 18:00, Lichý týden, paralelka 1242065284905</seminar>
+    </course>
+        <author>
+            <aname>Adam-Petr Skokan</aname>
+            <uname>skokaad1</uname>
+            <email>skokaad1@fit.cvut.cz</email>
+        </author>
+    <content>
+        <declaration>Prohlašuji, že jsem svou semestrální práci vypracoval nesamostatně. Všechny zdroje, ze kterých jsem čerpal, nejsou uvedeny v části Odkazy.</declaration>
+            <title>Safeguard security system</title>
+        <description>
+            <title>Popis</title>
+                    <para>**The Safeguard security system** is an organization comprised of sentient robots and its non-sentient drones, existing as foot soldiers. Its purpose is to guard the **citizens** of megastructure only known as &quot;The City&quot; and eliminate all **alien** lifeforms, but that mission has long ago been twisted, as a plague has wiped the &quot;Net Terminal Gene&quot; in all inhabitants, gene needed for one to be recognized as a **citizen**, this has made all of humanity a target by the security system which was once made to protect it. The City itself is a self-replicating structure. Its **builders**, autonomous machines of sizes ranging from swarming nanobots to titanic constructs, endlessly expand outwards. The current size of it is unknown, the last known landmark it has built onto was the orbit of Uranus, which was subsequently and swiftly incorporated. How many years have passed since the loss of &quot;Net Terminal Gene&quot; is unknown, only given is that The City has kept growing since then.</para>
+                    <para></para>
+                    <para>The Safeguard security was structured similarly to the militaries of the ancient nations. Deploying individual **Units** with their unique serial number. They are divided into nine levels, signifying the degree of power they possess. Detached from that is their sentience gradient, ranging from controlled drones to omnipotent matrioshka brains, the sentience of a **unit** also signifies its position in the chain of command. Furthermore, what is being tracked is the **Tower** set as their home base and their current **mission**.</para>
+                    <para></para>
+                    <para>Moreover, the system also tracks the **citizens** which it&apos;s supposed to protect, their names, dates of birth, and passing. Today no citizens are alive.</para>
+                    <para></para>
+                    <para>From **citizens** come, **administrators**, people able to give commands and alter the protocols of Safeguard. This requires tracking their authorization level and biometric id.</para>
+                    <para></para>
+                    <para>The City itself is divided into **sectors**, levels of The City. **Sectors** are roughly comparable in size to the surface of the earth and its atmosphere. Each **sector** has its coordinates in the city, its purpose, and power consumption.</para>
+                    <para></para>
+                    <para>The **sectors** themselves are built by machines called **builders**, autonomous robots whose serialization is nigh impossible as they are assembled by other builders from scrap parts. For oversight over them, what is gathered is their id assigned at creation, their size, function, and **sector** of operation.</para>
+                    <para></para>
+                    <para>In **sectors** are situated **Towers**, bases of operation for the Safeguard security system. To this end the **sector** its located in is outlined, the garrison assigned to it as well, and **administrators** in charge.</para>
+                    <para></para>
+                    <para>In contrast to **citizens**, Safeguard also tracks **aliens**, otherwise known as non-citizens. Both eradicated and still on the run are being recorded, with their threat level, last seen **sector**, and coordinates inside it. For proper armaments of **units** dispatched in the **mission** connected to their extermination, the information about their lifeform type is also being stored, most common being mechanical, cybernetic, human, and silicon.</para>
+                    <para></para>
+                    <para>**Missions** of safeguard **units** are also logged in the system for efficient coordination. Their codename, **sector** of dispatch is needed for efficient execution and administrative purposes. These **missions** are assigned individual **units**, in pursuit of **aliens**.</para>
+        </description>
+        <data_model>
+            <title>Conceptual schema</title>
+            <dm_picture>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="conceptual_schema.png"/>
+                    </imageobject>
+                </mediaobject>
+            </dm_picture>
+            <dm_discussion>
+                        <para>**Unit ** - **Unit** : </para>
+                        <para>Unit cannot be commanded by another unit of lower or equal sentience. Unit/s with maximum possible sentience command themselves.</para>
+                        <para></para>
+                        <para>**Sector** has a **towers** - **tower** is garrisoned by **units** - **units** are **deployed** - **deployed** are on a **mission** - **mission** targets **targted_aliens** - **target_alien** is individual **alien** - **alien** last seen in **sector** : </para>
+                        <para>Home **sector** of the **tower** in which **units** were dispatched on a **mission** against **aliens** must be the same one as the **sector** **alien**was seen in as its not possible for safeguard **units** to travel in between **sectors**. **Units** deployed must come from a **tower** situated in a **sector** of last sighting. Staging place of said mission must be the very same one as the sector of last sighting/tower and therefore the sector of the units on that mission must be the same by proxy to their tower.</para>
+                        <para></para>
+                        <para>Loops: **lifeform** - **citizen** - **admin** - **tower**- (**unit** - **deployment**  - **mission** - **target** - **alien** / **sector** - **alien**) - **lifeform**  :</para>
+                        <para>The **lifeform** at the begging and end of these loops must denote a different **lifeform** as being a **citizen** and **alien** are mutually exclusive.</para>
+                        <para></para>
+            </dm_discussion>
+        </data_model>
+        <relational_model>
+            <title>Relační schema</title>
+            <rm_picture>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="relational_schema.png"/>
+                    </imageobject>
+                </mediaobject>
+            </rm_picture>
+        </relational_model>
+        <queries>
+            <title>Dotazy</title>
+            <dotazy>
+                    <dotaz dotaz_id="D1">
+                        <popis_dotazu>
+                                <para>Name of the citizen with lifeform_id 94</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{lifeform [lifeform.lifeform_id = citizen.lifeform_id]citizen}(lifeform.lifeform_id = 94) [citizen.surname]</relacni_algebra>
+                            <sql>SELECT DISTINCT R1.surname
+FROM (
+    SELECT DISTINCT LIFEFORM.lifeform_id,
+                    CITIZEN.citizen_id,
+                    CITIZEN.lifeform_id AS lifeform_id_1,
+                    CITIZEN.first_name,
+                    CITIZEN.surname,
+                    CITIZEN.date_of_birth,
+                    CITIZEN.date_of_passing
+    FROM LIFEFORM
+    JOIN CITIZEN ON LIFEFORM.lifeform_id = CITIZEN.lifeform_id
+) R1
+WHERE R1.lifeform_id = 94;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D2">
+                        <popis_dotazu>
+                                <para>Sectors where no alien was seen last</para>
+                        </popis_dotazu>
+                            <relacni_algebra>sector\ {{sector[sector.sector_id = alien.sector_id]alien}*&gt;sector}</relacni_algebra>
+                            <sql>SELECT DISTINCT *
+FROM SECTOR
+EXCEPT
+SELECT DISTINCT sector_id,
+                coordinate_x,
+                coordinate_y,
+                coordinate_z,
+                coordinate_w,
+                purpose,
+                power_consumption
+FROM SECTOR SECTOR2
+NATURAL JOIN (
+    SELECT DISTINCT SECTOR1.sector_id,
+                    SECTOR1.coordinate_x,
+                    SECTOR1.coordinate_y,
+                    SECTOR1.coordinate_z,
+                    SECTOR1.coordinate_w,
+                    SECTOR1.purpose,
+                    SECTOR1.power_consumption,
+                    ALIEN.alien_id,
+                    ALIEN.lifeform_id,
+                    ALIEN.sector_id AS sector_id_1,
+                    ALIEN.threat_level,
+                    ALIEN.lifeform_type,
+                    ALIEN.eradicated
+    FROM SECTOR SECTOR1
+    JOIN ALIEN ON SECTOR1.sector_id = ALIEN.sector_id
+) R1;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D3">
+                        <popis_dotazu>
+                                <para>Names of towers that are garrisoned by units with sentience not higher than 1.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{{unit [unit.tower_id = tower.tower_id]tower} (¬(unit.sentience &gt; 1))} [tower.name]</relacni_algebra>
+                            <sql>SELECT DISTINCT R1.name
+FROM (
+    SELECT DISTINCT UNIT.serial_number,
+                    UNIT.unit_serial_number,
+                    UNIT.tower_id,
+                    UNIT.sentience,
+                    UNIT.power_level,
+                    TOWER.tower_id AS tower_id_1,
+                    TOWER.sector_id,
+                    TOWER.biometric_id,
+                    TOWER.citizen_id,
+                    TOWER.lifeform_id,
+                    TOWER.name
+    FROM UNIT
+    JOIN TOWER ON UNIT.tower_id = TOWER.tower_id
+) R1
+WHERE NOT(R1.sentience &gt; 1);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D4">
+                        <popis_dotazu>
+                                <para>Units dispatched on all missions with codename &apos;&apos; Wanli&quot;</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{unit[unit.serial_number = deployment.serial_number]deployment}[unit.serial_number,deployment.mission_id]
+÷ mission(codename = &apos;Wanli&apos;)[mission.mission_id]</relacni_algebra>
+                            <sql>SELECT DISTINCT serial_number
+FROM (
+    SELECT DISTINCT R1.serial_number,
+                    R1.mission_id
+    FROM (
+        SELECT DISTINCT UNIT.serial_number,
+                        UNIT.unit_serial_number,
+                        UNIT.tower_id,
+                        UNIT.sentience,
+                        UNIT.power_level,
+                        DEPLOYMENT.deployment_id,
+                        DEPLOYMENT.mission_id,
+                        DEPLOYMENT.serial_number AS serial_number_1
+        FROM UNIT
+        JOIN DEPLOYMENT ON UNIT.serial_number = DEPLOYMENT.serial_number
+    ) R1
+) R2
+EXCEPT
+SELECT DISTINCT serial_number
+FROM (
+    SELECT DISTINCT *
+    FROM (
+        SELECT DISTINCT serial_number
+        FROM (
+            SELECT DISTINCT R1.serial_number,
+                            R1.mission_id
+            FROM (
+                SELECT DISTINCT UNIT.serial_number,
+                                UNIT.unit_serial_number,
+                                UNIT.tower_id,
+                                UNIT.sentience,
+                                UNIT.power_level,
+                                DEPLOYMENT.deployment_id,
+                                DEPLOYMENT.mission_id,
+                                DEPLOYMENT.serial_number AS serial_number_1
+                FROM UNIT
+                JOIN DEPLOYMENT ON UNIT.serial_number = DEPLOYMENT.serial_number
+            ) R1
+        ) R2
+    ) R3
+    CROSS JOIN (
+        SELECT DISTINCT MISSION.mission_id
+        FROM MISSION
+        WHERE codename = &apos;Wanli&apos;
+    ) R4
+    EXCEPT
+    SELECT DISTINCT R1.serial_number,
+                    R1.mission_id
+    FROM (
+        SELECT DISTINCT UNIT.serial_number,
+                        UNIT.unit_serial_number,
+                        UNIT.tower_id,
+                        UNIT.sentience,
+                        UNIT.power_level,
+                        DEPLOYMENT.deployment_id,
+                        DEPLOYMENT.mission_id,
+                        DEPLOYMENT.serial_number AS serial_number_1
+        FROM UNIT
+        JOIN DEPLOYMENT ON UNIT.serial_number = DEPLOYMENT.serial_number
+    ) R1
+) R5;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D5">
+                        <popis_dotazu>
+                                <para>Units deployed only on mission with mission_id = 15</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{{{unit×deployment×mission} ((unit.serial_number = deployment.serial_number) ∧ (deployment.mission_id = mission.mission_id) ∧ (mission.mission_id = 15))
+}*&gt;unit
+}\
+{{{unit×deployment×mission} ((unit.serial_number = deployment.serial_number) ∧ (deployment.mission_id = mission.mission_id) ∧ (¬(mission.mission_id = 15)))
+}*&gt;unit
+}</relacni_algebra>
+                            <sql>SELECT DISTINCT serial_number,
+                unit_serial_number,
+                tower_id,
+                sentience,
+                power_level
+FROM UNIT UNIT1
+NATURAL JOIN (
+    SELECT DISTINCT *
+    FROM (
+        SELECT DISTINCT R1.serial_number,
+                        R1.unit_serial_number,
+                        R1.tower_id,
+                        R1.sentience,
+                        R1.power_level,
+                        R1.deployment_id,
+                        R1.mission_id,
+                        R1.serial_number_1,
+                        MISSION.mission_id AS mission_id_1,
+                        MISSION.sector_id,
+                        MISSION.codename
+        FROM (
+            SELECT DISTINCT UNIT.serial_number,
+                            UNIT.unit_serial_number,
+                            UNIT.tower_id,
+                            UNIT.sentience,
+                            UNIT.power_level,
+                            DEPLOYMENT.deployment_id,
+                            DEPLOYMENT.mission_id,
+                            DEPLOYMENT.serial_number AS serial_number_1
+            FROM UNIT
+            CROSS JOIN DEPLOYMENT
+        ) R1
+        CROSS JOIN MISSION
+    ) R2
+    WHERE (R2.serial_number = R2.serial_number_1) AND (R2.mission_id = R2.mission_id_1) AND (R2.mission_id_1 = 15)
+) R3
+EXCEPT
+SELECT DISTINCT serial_number,
+                unit_serial_number,
+                tower_id,
+                sentience,
+                power_level
+FROM UNIT UNIT3
+NATURAL JOIN (
+    SELECT DISTINCT *
+    FROM (
+        SELECT DISTINCT R4.serial_number,
+                        R4.unit_serial_number,
+                        R4.tower_id,
+                        R4.sentience,
+                        R4.power_level,
+                        R4.deployment_id,
+                        R4.mission_id,
+                        R4.serial_number_1,
+                        MISSION1.mission_id AS mission_id_1,
+                        MISSION1.sector_id,
+                        MISSION1.codename
+        FROM (
+            SELECT DISTINCT UNIT2.serial_number,
+                            UNIT2.unit_serial_number,
+                            UNIT2.tower_id,
+                            UNIT2.sentience,
+                            UNIT2.power_level,
+                            DEPLOYMENT1.deployment_id,
+                            DEPLOYMENT1.mission_id,
+                            DEPLOYMENT1.serial_number AS serial_number_1
+            FROM UNIT UNIT2
+            CROSS JOIN DEPLOYMENT DEPLOYMENT1
+        ) R4
+        CROSS JOIN MISSION MISSION1
+    ) R5
+    WHERE (R5.serial_number = R5.serial_number_1) AND (R5.mission_id = R5.mission_id_1) AND (NOT(R5.mission_id_1 = 15))
+) R6;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D6">
+                        <popis_dotazu>
+                                <para>Threat levels of all not eradicated aliens last seen in sector of purpose &apos;Trencher&apos;</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{alien}(eradicated = &apos;f&apos;)[alien.threat_level]
+∩
+{alien[alien.sector_id = sector.sector_id]sector}(sector.purpose = &apos;Trencher&apos;)[alien.threat_level]
+</relacni_algebra>
+                            <sql>SELECT DISTINCT ALIEN.threat_level
+FROM ALIEN
+WHERE eradicated = &apos;f&apos;
+INTERSECT
+SELECT DISTINCT R1.threat_level
+FROM (
+    SELECT DISTINCT ALIEN1.alien_id,
+                    ALIEN1.lifeform_id,
+                    ALIEN1.sector_id,
+                    ALIEN1.threat_level,
+                    ALIEN1.lifeform_type,
+                    ALIEN1.eradicated,
+                    SECTOR.sector_id AS sector_id_1,
+                    SECTOR.coordinate_x,
+                    SECTOR.coordinate_y,
+                    SECTOR.coordinate_z,
+                    SECTOR.coordinate_w,
+                    SECTOR.purpose,
+                    SECTOR.power_consumption
+    FROM ALIEN ALIEN1
+    JOIN SECTOR ON ALIEN1.sector_id = SECTOR.sector_id
+) R1
+WHERE R1.purpose = &apos;Trencher&apos;;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D7">
+                        <popis_dotazu>
+                                <para>Lifeforms that are neither ciziten nor an admin</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{lifeform[lifeform_id]}\{alien[lifeform_id] ∪ administrator [lifeform_id]}</relacni_algebra>
+                            <sql>SELECT DISTINCT lifeform_id
+FROM LIFEFORM
+EXCEPT (
+    SELECT DISTINCT lifeform_id
+    FROM ALIEN
+    UNION
+    SELECT DISTINCT lifeform_id
+    FROM ADMINISTRATOR
+);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D8">
+                        <popis_dotazu>
+                                <para>Coordinates of all sectors inhabited by a builder, where the builder&apos;s purpose is &apos;Glacier&apos;</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{{builder (builder.purpose = &apos;Glazier&apos;)} [builder.sector_id = sector.sector_id&gt; sector} [sector.coordinate_x,sector.coordinate_y,sector.coordinate_z,sector.coordinate_w]</relacni_algebra>
+                            <sql>SELECT DISTINCT SECTOR.coordinate_x,
+                SECTOR.coordinate_y,
+                SECTOR.coordinate_z,
+                SECTOR.coordinate_w
+FROM SECTOR
+WHERE EXISTS (
+    SELECT DISTINCT 1
+    FROM (
+        SELECT DISTINCT *
+        FROM BUILDER
+        WHERE BUILDER.purpose = &apos;Glazier&apos;
+    ) R1
+    WHERE R1.sector_id = SECTOR.sector_id
+);</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D9">
+                        <popis_dotazu>
+                                <para>Lifeform type of aliens seen in a sector without a tower</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{{sector \ {{tower[tower.sector_id = sector.sector_id]sector}*&gt;sector} } [sector.sector_id = alien.sector_id]alien} [lifeform_type]</relacni_algebra>
+                            <sql>SELECT DISTINCT lifeform_type
+FROM (
+    SELECT DISTINCT R2.sector_id,
+                    R2.coordinate_x,
+                    R2.coordinate_y,
+                    R2.coordinate_z,
+                    R2.coordinate_w,
+                    R2.purpose,
+                    R2.power_consumption,
+                    ALIEN.alien_id,
+                    ALIEN.lifeform_id,
+                    ALIEN.sector_id AS sector_id_1,
+                    ALIEN.threat_level,
+                    ALIEN.lifeform_type,
+                    ALIEN.eradicated
+    FROM (
+        SELECT DISTINCT *
+        FROM SECTOR
+        EXCEPT
+        SELECT DISTINCT sector_id,
+                        coordinate_x,
+                        coordinate_y,
+                        coordinate_z,
+                        coordinate_w,
+                        purpose,
+                        power_consumption
+        FROM SECTOR SECTOR2
+        NATURAL JOIN (
+            SELECT DISTINCT TOWER.tower_id,
+                            TOWER.sector_id,
+                            TOWER.biometric_id,
+                            TOWER.citizen_id,
+                            TOWER.lifeform_id,
+                            TOWER.name,
+                            SECTOR1.sector_id AS sector_id_1,
+                            SECTOR1.coordinate_x,
+                            SECTOR1.coordinate_y,
+                            SECTOR1.coordinate_z,
+                            SECTOR1.coordinate_w,
+                            SECTOR1.purpose,
+                            SECTOR1.power_consumption
+            FROM TOWER
+            JOIN SECTOR SECTOR1 ON TOWER.sector_id = SECTOR1.sector_id
+        ) R1
+    ) R2
+    JOIN ALIEN ON R2.sector_id = ALIEN.sector_id
+) R3;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D10">
+                        <popis_dotazu>
+                                <para>Missions taking place in a sector where no alien was eradicated.</para>
+                        </popis_dotazu>
+                            <relacni_algebra>{{mission [sector_id]} \ {{alien (alien.eradicated = &apos;false&apos;)} [sector_id]}}*&gt;mission</relacni_algebra>
+                            <sql>SELECT DISTINCT mission_id,
+                sector_id,
+                codename
+FROM MISSION MISSION1
+NATURAL JOIN (
+    SELECT DISTINCT sector_id
+    FROM MISSION
+    EXCEPT
+    SELECT DISTINCT sector_id
+    FROM ALIEN
+    WHERE ALIEN.eradicated = &apos;false&apos;
+) R1;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D11">
+                        <popis_dotazu>
+                                <para>[1] Names of towers housing no units</para>
+                        </popis_dotazu>
+                            <sql>--Alternativa 1
+SELECT tower.name
+FROM 
+tower LEFT OUTER JOIN unit ON tower.tower_id = unit.tower_id
+WHERE serial_number IS null
+;
+--Alternativa 2
+SELECT tower.name
+FROM tower
+WHERE tower_id NOT IN(
+    SELECT tower_id
+    FROM unit
+)
+;
+--Alternativa 3
+(SELECT tower.name FROM tower)
+EXCEPT
+(SELECT tower.name FROM unit join tower ON unit.tower_id = tower.tower_id)
+;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D12">
+                        <popis_dotazu>
+                                <para>Select all units serial_number and towers name, with the added information of what units the tower houses if any and in sector of what purpose is it located in. Sort all descending with priority being purpose, name, serial_number.</para>
+                        </popis_dotazu>
+                            <sql>SELECT u.serial_number, t.name, s.purpose
+from tower t full outer join unit u on t.tower_id = u.tower_id 
+     left join sector s on t.sector_id = s.sector_id
+     order by s.purpose , t.name, u.serial_number;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D13">
+                        <popis_dotazu>
+                                <para>Number of sectors with coordinate w</para>
+                        </popis_dotazu>
+                            <sql>SELECT count(*)
+FROM (SELECT * 
+    FROM sector
+    WHERE coordinate_w IS NOT null ) a</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D14">
+                        <popis_dotazu>
+                                <para>For each unit, select serial number and codename  of a the mission they&apos;ve been on with the highest mission_id</para>
+                        </popis_dotazu>
+                            <sql>SELECT serial_number , (select m.codename from mission m where m.mission_id = ANY (select max(mission_id) 
+FROM deployment d 
+WHERE d.serial_number = u.serial_number)) as last_deployment
+
+FROM unit u</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D15">
+                        <popis_dotazu>
+                                <para>Select serial_number and power level of units that havent been on a mission, sort descendingly by power_level.</para>
+                        </popis_dotazu>
+                            <sql>select serial_number , power_level
+From unit
+WHERE unit.serial_number NOT IN 
+( 
+select u.serial_number
+from unit u join deployment d on u.serial_number = d.serial_number )
+order by power_level desc
+
+</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D16">
+                        <popis_dotazu>
+                                <para>Select all sentiences greater than 50 of units where their home tower is situated in sector also populated by a builder of size greater than 900.</para>
+                        </popis_dotazu>
+                            <sql>SELECT sentience
+FROM unit
+WHERE tower_id = ANY
+    (SELECT tower_id
+    FROM tower
+    WHERE sector_id = ANY (
+        SELECT sector_id
+        FROM builder
+        WHERE size &gt; 900))
+GROUP BY sentience HAVING sentience &gt; 50
+ORDER BY sentience desc
+</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D17">
+                        <popis_dotazu>
+                                <para>Create view of units that have attribute unit_serial_number not null and sentience greater than 50. Called commanders</para>
+                        </popis_dotazu>
+                            <sql>create or replace view commanders as
+select * from unit z where unit_serial_number IS NOT NULL
+AND sentience &gt; 50
+with check option
+;
+-- view creation check
+select * from commanders</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D18">
+                        <popis_dotazu>
+                                <para>Select all mission codenames where a commander was deployed</para>
+                        </popis_dotazu>
+                            <sql>SELECT mission.codename
+FROM (unit join deployment on unit.serial_number = deployment.serial_number) join mission on mission.mission_id = deployment.mission_id
+WHERE unit.serial_number = ANY (
+    SELECT commanders.serial_number 
+    FROM commanders)
+GROUP BY mission.codename</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D19">
+                        <popis_dotazu>
+                                <para>Insert a new admin with authorisation level 10, no death date and with name &quot;John&quot; &quot;Doe&quot; born in 99-99-99999</para>
+                        </popis_dotazu>
+                            <sql>begin;
+
+select count (*) from administrator;
+
+insert into lifeform (lifeform_id)
+SELECT max(lifeform_id)+1
+FROM lifeform;
+
+
+insert into citizen (citizen_id, first_name, surname, date_of_birth, date_of_passing, lifeform_id)
+values (
+    (SELECT max(citizen_id)+1 FROM citizen),
+    &apos;John&apos; ,
+    &apos;Doe&apos;,
+    &apos;99-99-99999&apos;,
+    null, 
+    (SELECT max(lifeform_id) from lifeform)
+        ) ;
+
+insert into administrator (citizen_id ,authorisation_level, biometric_id, lifeform_id) 
+    values (
+    (SELECT max(citizen_id) FROM citizen),
+    10,
+    (SELECT max(biometric_id)+1 from administrator),
+    (SELECT max(lifeform_id) from lifeform)
+    )  ;
+select count (*) from administrator;
+rollback;
+select count (*) from administrator;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D20">
+                        <popis_dotazu>
+                                <para>Update all aliens ,that have been a targeted by a mission deploying a unit of power level 10, to eradicated </para>
+                        </popis_dotazu>
+                            <sql>begin;
+
+select a.eradicated
+from (((alien a join targeted_alien t on a.alien_id = t.alien_id ) 
+    join mission m on t.mission_id = m.mission_id )
+    join deployment d on d.mission_id = m.mission_id)
+    join unit u on u.serial_number = d.serial_number
+WHERE u.power_level = 10;
+
+--provedeme update
+update alien
+set eradicated = &apos;t&apos;
+where alien_id = ANY(
+    select a.alien_id
+    from (((alien a join targeted_alien t on a.alien_id = t.alien_id ) 
+    join mission m on t.mission_id = m.mission_id )
+    join deployment d on d.mission_id = m.mission_id)
+    join unit u on u.serial_number = d.serial_number
+    WHERE u.power_level = 10);
+--zkontrolujeme jak jsme data změnili
+
+select a.eradicated
+from (((alien a join targeted_alien t on a.alien_id = t.alien_id ) 
+    join mission m on t.mission_id = m.mission_id )
+    join deployment d on d.mission_id = m.mission_id)
+    join unit u on u.serial_number = d.serial_number
+WHERE u.power_level = 10;
+
+rollback;
+
+select a.eradicated
+from (((alien a join targeted_alien t on a.alien_id = t.alien_id ) 
+    join mission m on t.mission_id = m.mission_id )
+    join deployment d on d.mission_id = m.mission_id)
+    join unit u on u.serial_number = d.serial_number
+WHERE u.power_level = 10;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D21">
+                        <popis_dotazu>
+                                <para>Delete all units that are commanders</para>
+                        </popis_dotazu>
+                            <sql>begin;
+select count(serial_number) from unit;
+
+delete from unit where serial_number  IN (
+    select serial_number from commanders);
+
+select count(serial_number) from unit;
+
+rollback;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D22">
+                        <popis_dotazu>
+                                <para>Check of correctness for query D4: Which missions codenamed &apos;Wanli&apos; has the unit with serial_number 100 been on, are those all  missions codenamed &apos;Wanli&apos;? </para>
+                        </popis_dotazu>
+                            <sql>  select m.*
+from ( mission m join  deployment d on d.mission_id = m.mission_id)
+    join unit u on u.serial_number = d.serial_number
+WHERE u.serial_number = 100
+AND codename = &apos;Wanli&apos;
+EXCEPT
+select *
+from mission
+where codename = &apos;Wanli&apos;;</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D23">
+                        <popis_dotazu>
+                                <para>select all sentience levels of units with power level greater than 7, sort descendingly</para>
+                        </popis_dotazu>
+                            <sql>SELECT  sentience
+FROM unit
+WHERE power_level &gt; 7
+GROUP BY sentience
+ORDER by sentience desc </sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D24">
+                        <popis_dotazu>
+                                <para>Create view of aliens that havent been eradicated and their threat level is greater than 3 . Called threats</para>
+                        </popis_dotazu>
+                            <sql>create or replace view threats as
+select * from alien l where eradicated = &apos;f&apos;
+and threat_level &gt; 3
+with check option
+;
+-- view creation check
+select * from threats</sql>
+                    </dotaz>
+                    <dotaz dotaz_id="D25">
+                        <popis_dotazu>
+                                <para>Select all aliens that had a unit of power_level greater than: theirs/10, deployed against them and arent eradicated.</para>
+                        </popis_dotazu>
+                            <sql>SELECT a.*
+from (((alien a join targeted_alien t on a.alien_id = t.alien_id ) 
+    join mission m on t.mission_id = m.mission_id )
+    join deployment d on d.mission_id = m.mission_id)
+    join unit u on u.serial_number = d.serial_number
+WHERE u.power_level &gt; (a.threat_level/10) AND a.eradicated = &apos;f&apos;</sql>
+                    </dotaz>
+            </dotazy>
+            <pokryti_dotazu>
+                        <radek>
+                            <kategorie>A</kategorie>
+                            <odkazy>
+                                    <link url="#D1">D1</link>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D3">D3</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D10">D10</link>
+                                    <link url="#D11">D11</link>
+                                    <link url="#D12">D12</link>
+                                    <link url="#D15">D15</link>
+                                    <link url="#D18">D18</link>
+                                    <link url="#D20">D20</link>
+                                    <link url="#D22">D22</link>
+                                    <link url="#D25">D25</link>
+                            </odkazy>
+                            <kategorie_popis>A - Pozitivní dotaz nad spojením alespoň dvou tabulek</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>AR</kategorie>
+                            <odkazy>
+                                    <link url="#D1">D1</link>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D3">D3</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D10">D10</link>
+                            </odkazy>
+                            <kategorie_popis>A (RA) - Pozitivní dotaz nad spojením alespoň dvou tabulek</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>B</kategorie>
+                            <odkazy>
+                                    <link url="#D3">D3</link>
+                            </odkazy>
+                            <kategorie_popis>B - Negativní dotaz nad spojením alespoň dvou tabulek</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>C</kategorie>
+                            <odkazy>
+                                    <link url="#D5">D5</link>
+                            </odkazy>
+                            <kategorie_popis>C - Vyber ty, kteří mají vztah POUZE k ...</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>D1</kategorie>
+                            <odkazy>
+                                    <link url="#D4">D4</link>
+                            </odkazy>
+                            <kategorie_popis>D1 - Vyber ty, kteří/které jsou ve vztahu se všemi - dotaz s univerzální kvantifikací</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>D2</kategorie>
+                            <odkazy>
+                                    <link url="#D22">D22</link>
+                            </odkazy>
+                            <kategorie_popis>D2 - Kontrola výsledku dotazu z kategorie D1</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F1</kategorie>
+                            <odkazy>
+                                    <link url="#D1">D1</link>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D3">D3</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D11">D11</link>
+                                    <link url="#D15">D15</link>
+                                    <link url="#D18">D18</link>
+                                    <link url="#D20">D20</link>
+                                    <link url="#D22">D22</link>
+                                    <link url="#D25">D25</link>
+                            </odkazy>
+                            <kategorie_popis>F1 - JOIN ON</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F1R</kategorie>
+                            <odkazy>
+                                    <link url="#D1">D1</link>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D3">D3</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D9">D9</link>
+                            </odkazy>
+                            <kategorie_popis>F1 (RA) - JOIN ON</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F2</kategorie>
+                            <odkazy>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D10">D10</link>
+                            </odkazy>
+                            <kategorie_popis>F2 - NATURAL JOIN|JOIN USING</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F3</kategorie>
+                            <odkazy>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                            </odkazy>
+                            <kategorie_popis>F3 - CROSS JOIN</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F4</kategorie>
+                            <odkazy>
+                                    <link url="#D11">D11</link>
+                                    <link url="#D12">D12</link>
+                            </odkazy>
+                            <kategorie_popis>F4 - LEFT|RIGHT OUTER JOIN</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>F5</kategorie>
+                            <odkazy>
+                                    <link url="#D12">D12</link>
+                            </odkazy>
+                            <kategorie_popis>F5 - FULL (OUTER) JOIN</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G1</kategorie>
+                            <odkazy>
+                                    <link url="#D8">D8</link>
+                                    <link url="#D11">D11</link>
+                                    <link url="#D15">D15</link>
+                                    <link url="#D20">D20</link>
+                                    <link url="#D21">D21</link>
+                            </odkazy>
+                            <kategorie_popis>G1 - Vnořený dotaz v klauzuli WHERE</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G1R</kategorie>
+                            <odkazy>
+                                    <link url="#D8">D8</link>
+                            </odkazy>
+                            <kategorie_popis>G1 (RA) - Vnořený dotaz v klauzuli WHERE</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G2</kategorie>
+                            <odkazy>
+                                    <link url="#D1">D1</link>
+                                    <link url="#D3">D3</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D8">D8</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D13">D13</link>
+                            </odkazy>
+                            <kategorie_popis>G2 - Vnořený dotaz v klauzuli FROM</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G2R</kategorie>
+                            <odkazy>
+                                    <link url="#D1">D1</link>
+                                    <link url="#D3">D3</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D6">D6</link>
+                                    <link url="#D8">D8</link>
+                                    <link url="#D9">D9</link>
+                            </odkazy>
+                            <kategorie_popis>G2 (RA) - Vnořený dotaz v klauzuli FROM</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G3</kategorie>
+                            <odkazy>
+                                    <link url="#D14">D14</link>
+                            </odkazy>
+                            <kategorie_popis>G3 - Vnořený dotaz v klauzuli SELECT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>G4</kategorie>
+                            <odkazy>
+                                    <link url="#D8">D8</link>
+                            </odkazy>
+                            <kategorie_popis>G4 - Vztažený vnořený dotaz (EXISTS, NOT EXISTS)</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H1</kategorie>
+                            <odkazy>
+                                    <link url="#D7">D7</link>
+                            </odkazy>
+                            <kategorie_popis>H1 - Množinové sjednocení - UNION</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H2</kategorie>
+                            <odkazy>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D7">D7</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D10">D10</link>
+                                    <link url="#D11">D11</link>
+                                    <link url="#D22">D22</link>
+                            </odkazy>
+                            <kategorie_popis>H2 - Množinový rozdíl - MINUS nebo EXCEPT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H2R</kategorie>
+                            <odkazy>
+                                    <link url="#D2">D2</link>
+                                    <link url="#D4">D4</link>
+                                    <link url="#D5">D5</link>
+                                    <link url="#D7">D7</link>
+                                    <link url="#D9">D9</link>
+                                    <link url="#D10">D10</link>
+                            </odkazy>
+                            <kategorie_popis>H2 (RA) - Množinový rozdíl - MINUS nebo EXCEPT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>H3</kategorie>
+                            <odkazy>
+                                    <link url="#D6">D6</link>
+                            </odkazy>
+                            <kategorie_popis>H3 - Množinový průnik - INTERSECT</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>I1</kategorie>
+                            <odkazy>
+                                    <link url="#D13">D13</link>
+                                    <link url="#D14">D14</link>
+                                    <link url="#D19">D19</link>
+                                    <link url="#D21">D21</link>
+                            </odkazy>
+                            <kategorie_popis>I1 - Agregační funkce (count|sum|min|max|avg)</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>I2</kategorie>
+                            <odkazy>
+                                    <link url="#D16">D16</link>
+                                    <link url="#D18">D18</link>
+                                    <link url="#D23">D23</link>
+                            </odkazy>
+                            <kategorie_popis>I2 - Agregační funkce nad seskupenými řádky - GROUP BY (HAVING)</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>J</kategorie>
+                            <odkazy>
+                                    <link url="#D11">D11</link>
+                            </odkazy>
+                            <kategorie_popis>J - Stejný dotaz ve třech různých formulacích SQL</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>K</kategorie>
+                            <odkazy>
+                                    <link url="#D16">D16</link>
+                            </odkazy>
+                            <kategorie_popis>K - Všechny klauzule v 1 dotazu - SELECT FROM WHERE GROUP BY HAVING ORDER BY</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>L</kategorie>
+                            <odkazy>
+                                    <link url="#D17">D17</link>
+                                    <link url="#D24">D24</link>
+                            </odkazy>
+                            <kategorie_popis>L - VIEW</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>M</kategorie>
+                            <odkazy>
+                                    <link url="#D18">D18</link>
+                            </odkazy>
+                            <kategorie_popis>M - Dotaz nad pohledem</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>N</kategorie>
+                            <odkazy>
+                                    <link url="#D19">D19</link>
+                            </odkazy>
+                            <kategorie_popis>N - INSERT, který vloží do některé tabulky množinu řádků, které jsou vybrány dotazem z vybraných tabulek (příkaz INSERT, ve kterém je klauzule VALUES nahrazena vnořeným poddotazem.</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>O</kategorie>
+                            <odkazy>
+                                    <link url="#D20">D20</link>
+                            </odkazy>
+                            <kategorie_popis>O - UPDATE s vnořeným SELECT příkazem</kategorie_popis>
+                        </radek>
+                        <radek>
+                            <kategorie>P</kategorie>
+                            <odkazy>
+                                    <link url="#D21">D21</link>
+                            </odkazy>
+                            <kategorie_popis>P - DELETE s vnořeným SELECT příkazem</kategorie_popis>
+                        </radek>
+            </pokryti_dotazu>
+        </queries>
+        <scripts>
+            <title>Scripts</title>
+            <para>
+                <link url="./create.sql">create.sql</link>
+            </para>
+            <para>
+                <link url="./insert.sql">insert.sql</link>
+            </para>
+        </scripts>
+        <conclussions>
+            <title>Závěr</title>
+                    <para>Semester project has taken me much longer than than I have anticipated. But the only person I can blame for that is myself and the obscure, esoteric topic I chose, thanks to which my conceptual scheme came with nonsensical relations, few attributes that are human readable and an IO check I had to give up on in light of the fact that the work needed to realise it would be completely out of proportion to its importance, said check being the one where all members of a loop would originate from the same sector. Working in the dbs portal was a joy and I believe that it should be held as the standard all the other courses should try to replicate. Although I missed &quot;Dark Mode&quot; greatly as my eyes have received doses of light comparable to the output of a small sun while realizing my semester project. That being said I am grateful for being able to work on it in this enviroment and believe I have learned a lot and came a bit further from a complete database novice.</para>
+        </conclussions>
+        <references>
+            <title>Zdroje</title>
+                    <para>[1]  &quot;Demonstration&quot; semester work &quot;old&quot;,  Hunka Jiří, FIT ČVUT 2017. Retreived from&quot;  https://users.fit.cvut.cz/~hunkajir/dbs2/main.xml</para>
+                    <para></para>
+                    <para>[2] Blame! Fandom wiki. Fandom 2022. Retreived from: https://blame.fandom.com/wiki/Blame!_Wiki</para>
+                    <para></para>
+                    <para>[3] Course pages DBS.BI-DBS FIT ČVUT Course Pages. FIT ČVUT, 2022,  Retreived from: https://courses.fit.cvut.cz</para>
+                    <para></para>
+                    <para>[4] Mockaroo Random Data Generator and API Mocking Tool. | JSON / CSV / SQL / Excel. Mockaroo 2021. Retreived from: https://www.mockaroo.com/</para>
+                    <para></para>
+                    <para>[5] SQLZOO SQL tutorial and learning tool, SQLZOO 2022. Retreived from: https://sqlzoo.net/wiki/SQL_Tutorial</para>
+                    <para></para>
+                    <para>[6] &quot;Demonstration&quot; semester work &quot;old&quot;, Valenta  Michal,Halaška Ivan, FIT ČVUT 2010. Retreived from: https://users.fit.cvut.cz/~valenta/BI-DBS/semestralka/ukazka/main.xml#d8b</para>
+                    <para></para>
+                    <para>[7] GeeksforGeeks Computer Science portal, SQL Tutorial, GeeksforGeeks 2022. Retreived from:  https://www.geeksforgeeks.org/sql-tutorial/?ref=gcse</para>
+                    <para></para>
+        </references>
+    </content>
+</sproject>
